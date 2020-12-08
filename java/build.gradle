@@ -55,6 +55,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    compile('org.springframework.statemachine:spring-statemachine-starter:2.2.1.RELEASE')
     testImplementation 'org.springframework.security:spring-security-test'
     integrationTestCompile "org.testcontainers:postgresql:1.15.0"
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.18.1'
