@@ -1,0 +1,42 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+spring:
+  flyway:
+    clean-on-validation-error: true
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:12.4:///ccf?TC_DAEMON=true&TC_REUSABLE=true
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  security:
+    oauth2:
+      client:
+        provider:
+          oidc:
+            issuer-uri: https://localhost:5000/o
+        registration:
+          oidc:
+            client-id: internal
+            client-secret: internal
+
+
+# Allowed audience list
+oidc:
+  audience-list: ccd-admin,hmcts
+  issuer: http://localhost:5000/openam/oauth2/hmcts
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic
+
+generate-data: false
+big-ids: false

@@ -1,6 +1,0 @@
-<h1 class="govuk-heading-l">Enter {{ partyType }}'s details</h1>
-<app-radio title="{{ 'Select type of ' + partyType}}"
-[form]="form" [choices]="choices" [control]="partyTypeControl"></app-radio>
-<div *ngFor="let choice of choices" [ngSwitch]="partyTypeControl.value">
-  <app-dynamic-form [validate]="validate" [form]="form" [questions]="partyTypeQuestions[choice[0]]" *ngSwitchCase="choice[0]"></app-dynamic-form>
-</div>

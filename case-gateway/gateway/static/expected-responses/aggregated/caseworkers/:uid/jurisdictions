@@ -1,0 +1,26 @@
+[
+  {
+    "id": "DIVORCE",
+    "name": "Family Divorce",
+    "description": "Family Divorce: dissolution of marriage",
+    "caseTypes": [
+      {
+        "id": "DIVORCE",
+        "description": "Handling of the dissolution of marriage",
+        "version": null
+      }
+    ]
+  },
+  {
+    "id": "OTHER",
+    "name": "Indie",
+    "description": "Free",
+    "caseTypes": [
+      {
+        "id": "Indie",
+        "description": "Freedom",
+        "version": null
+      }
+    ]
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "links": [],
+  "id": null,
+  "jurisdiction": "NFD",
+  "case_type": null,
+  "created_on": null,
+  "last_modified_on": null,
+  "last_state_modified_on": null,
+  "state": "Open",
+  "security_classification": null,
+  "data": {
+    "partyType": "SoleTrader",
+    "title": "Mr",
+    "firstName": "Alex",
+    "lastName": "M",
+    "dateOfBirth": "2000-01-01"
+  },
+  "data_classification": null,
+  "after_submit_callback_response": null,
+  "callback_response_status_code": null,
+  "callback_response_status": null,
+  "delete_draft_response_status_code": null,
+  "delete_draft_response_status": null
+}

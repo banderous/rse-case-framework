@@ -1,0 +1,51 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+      jooq:
+        tools:
+          LoggerListener: DEBUG
+spring:
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+  datasource:
+    continue-on-error: true
+    driverClassName: org.postgresql.Driver
+    hikari:
+      initialization-fail-timeout: 600000
+    password: postgres
+    url: jdbc:postgresql://${database-host:db}:${database-port:5432}/ccf
+    username: postgres
+  flyway:
+    clean-on-validation-error: true # TODO - remove once envs exist
+    connectRetries: 600000
+    locations: classpath:/db/migration
+    password: postgres
+    url: jdbc:postgresql://${database-host:db}:${database-port:5432}/ccf
+    user: postgres
+  security:
+    oauth2:
+      client:
+        provider:
+          oidc:
+            issuer-uri: ${IDAM_URI:http://localhost:5000}/o
+        registration:
+          oidc:
+            client-id: internal
+            client-secret: internal
+
+# Allowed audience list
+oidc:
+  audience-list: ccd-admin,hmcts,xui_webapp
+  issuer: ${IDAM_URI:http://localhost:5000}
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

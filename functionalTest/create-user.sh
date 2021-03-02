@@ -1,0 +1,1 @@
+curl -X POST "http://idam-api:5000/testing-support/accounts" -H "accept: */*" -H "Content-Type: application/json" -H "X-XSRF-TOKEN: GYGVfWbs-mg4fPyq4PAJqpJ1YDRMViRd3Sxc" -d "{ \"email\": \"super@gmail.com\", \"forename\": \"string\", \"password\": \"string\", \"roles\": [ \"caseworker\" ], \"surname\": \"string\"}"

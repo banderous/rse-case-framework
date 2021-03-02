@@ -1,0 +1,16 @@
+{
+  "data": {
+    "partyType": "Individual",
+    "title": "Mr",
+    "firstName": "A",
+    "lastName": "Person",
+    "dateOfBirth": "2000-01-01"
+  },
+  "event": {
+    "id": "cases_AddParty",
+    "summary": "",
+    "description": ""
+  },
+  "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJwMjhlNGJzcmhyY2ZpY3U3NzEzaGNxbDdyMCIsInN1YiI6IjBkMDYzMGFiLTc5YmMtNDM5OS1iYjk3LWIzNjYzYjNmNTQyMSIsImlhdCI6MTYxMTYwODI5NSwiY2FzZS1pZCI6IjY4IiwiZXZlbnQtaWQiOiJnZW5lcmFsUmVmZXJyYWwiLCJjYXNlLXR5cGUtaWQiOiJESVZPUkNFIiwianVyaXNkaWN0aW9uLWlkIjoiRElWT1JDRSIsImNhc2Utc3RhdGUiOiJBd2FpdGluZ1BheW1lbnQiLCJjYXNlLXZlcnNpb24iOiIyNzNlYTRhMmY1YWEyYWEwNmZjZGM3NzRkNDEyMmE2MzFhMDcwZmNkIiwiZW50aXR5LXZlcnNpb24iOjF9.uToyZcuQjMNMHyyu3xgqN4ZCHIM8pF-nTqimwzQd6gk",
+  "ignore_warning": false
+}

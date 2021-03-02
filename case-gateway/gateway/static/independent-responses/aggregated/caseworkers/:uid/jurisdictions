@@ -1,0 +1,14 @@
+[
+  {
+    "id": "OTHER",
+    "name": "Indie",
+    "description": "Free",
+    "caseTypes": [
+      {
+        "id": "Indie",
+        "description": "Freedom",
+        "version": null
+      }
+    ]
+  }
+]

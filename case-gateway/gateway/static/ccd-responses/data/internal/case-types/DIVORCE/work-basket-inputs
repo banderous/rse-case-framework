@@ -1,0 +1,182 @@
+{
+  "workbasketInputs": [
+    {
+      "label": "RDC",
+      "order": 1,
+      "field": {
+        "id": "D8DivorceUnit",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "FixedList-courtEnum",
+          "type": "FixedList",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [
+            {
+              "code": "serviceCentre",
+              "label": "Courts and Tribunals Service Centre",
+              "order": null
+            },
+            {
+              "code": "eastMidlands",
+              "label": "East Midlands Divorce Unit (Nottingham)",
+              "order": null
+            },
+            {
+              "code": "westMidlands",
+              "label": "West Midlands Divorce Unit (Stoke)",
+              "order": null
+            },
+            {
+              "code": "southWest",
+              "label": "South West Regional Divorce Unit (Southampton)",
+              "order": null
+            },
+            {
+              "code": "northWest",
+              "label": "North West Regional Divorce Unit (Liverpool)",
+              "order": null
+            },
+            {
+              "code": "buryStEdmunds",
+              "label": "Bury St Edmunds",
+              "order": null
+            }
+          ],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    },
+    {
+      "label": "Solicitor Payment Method",
+      "order": 2,
+      "field": {
+        "id": "SolPaymentHowToPay",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "FixedList-solHowToPay",
+          "type": "FixedList",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [
+            {
+              "code": "feePayByAccount",
+              "label": "Fee account",
+              "order": null
+            },
+            {
+              "code": "feesHelpWith",
+              "label": "Help with fees",
+              "order": null
+            },
+            {
+              "code": "cheque",
+              "label": "Cheque (DO NOT USE)",
+              "order": null
+            }
+          ],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    },
+    {
+      "label": "Urgent Case",
+      "order": 3,
+      "field": {
+        "id": "SolUrgentCase",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "YesOrNo",
+          "type": "YesOrNo",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    },
+    {
+      "label": "Case on digital DN Outcome",
+      "order": 4,
+      "field": {
+        "id": "DnOutcomeCase",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "YesOrNo",
+          "type": "YesOrNo",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    },
+    {
+      "label": "Case on digital DA",
+      "order": 5,
+      "field": {
+        "id": "ApplyForDecreeAbsolute",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "YesOrNo",
+          "type": "YesOrNo",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    },
+    {
+      "label": "Welsh Language",
+      "order": 6,
+      "field": {
+        "id": "LanguagePreferenceWelsh",
+        "elementPath": null,
+        "metadata": false,
+        "field_type": {
+          "id": "YesOrNo",
+          "type": "YesOrNo",
+          "min": null,
+          "max": null,
+          "regular_expression": null,
+          "fixed_list_items": [],
+          "complex_fields": [],
+          "collection_field_type": null
+        },
+        "show_condition": null
+      },
+      "display_context_parameter": null
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://ccd-data-store-api:4452/internal/case-types/DIVORCE/work-basket-inputs"
+    }
+  }
+}

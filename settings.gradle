@@ -1,1 +1,1 @@
-include 'java', 'angular'
+include 'java:backend', 'java:case-api-lib', 'angular'

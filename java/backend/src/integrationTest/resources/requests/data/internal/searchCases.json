@@ -1,0 +1,40 @@
+{
+  "native_es_query": {
+    "from": 0,
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match": {
+              "state": {
+                "operator": "and",
+                "query": "AwaitingPayment"
+              }
+            }
+          },
+          {
+            "match": {
+              "data.D8DivorceUnit": {
+                "operator": "and",
+                "query": "serviceCentre"
+              }
+            }
+          },
+          {
+            "match": {
+              "data.SolUrgentCase": {
+                "operator": "and",
+                "query": "Yes"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "size": 25,
+    "sort": []
+  },
+  "supplementary_data": [
+    "*"
+  ]
+}

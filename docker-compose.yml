@@ -8,34 +8,111 @@ services:
       POSTGRES_USER: postgres
     expose:
       - 5432
+  functional-tests:
+    build:
+      context: functionalTest
+      dockerfile: Dockerfile
+    volumes:
+      - './functionalTest/build:/app/build'
+    depends_on:
+      - xui-manage-cases
+      - backend
+
   backend:
     build:
-      context: java
+      context: java/backend
       dockerfile: Dockerfile
     environment:
-      IDAM_URI: http://keycloak:8080/auth/realms/rse
+      IDAM_URI: http://idam-api:5000
     command:
-      - --generate-data=true
+      - --generate-data=true --big-ids=true
     depends_on:
       - db
-      - keycloak
     expose:
       - 8080
-  frontend:
+    ports:
+      - 8080:8080
+  case-gateway:
     build:
-      context: angular
+      context: case-gateway
       dockerfile: Dockerfile
-    command: ${NG_COMMAND}
-    depends_on:
-      - backend
     expose:
-      - 4200
-    volumes:
-      - './angular/build:/app/build'
+      - 80
+    environment:
+      BIND_ADDRESS: 0.0.0.0:80
+      CCD_HOST: ccd-api-gateway:3453
+      INDIE_HOST: backend:8080
 
-  keycloak:
-    build:
-      context: keycloak
-      dockerfile: Dockerfile
+  idam-api:
+    image: hmctspublic.azurecr.io/hmcts/rse/rse-idam-simulator:latest
     expose:
-      - 8090
+      - 5000
+    environment:
+      SERVER_PORT: 5000
+      SIMULATOR_JWT_ISSUER: http://idam-api:5000
+      SIMULATOR_OPENID_BASE-URL: http://idam-api:5000
+  service-auth-provider-api:
+    image: "hmctspublic.azurecr.io/rpe/service-auth-provider:latest"
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    expose:
+      - 8080
+    environment:
+      SERVER_PORT: 8080
+      JWT_KEY: wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==
+      MICROSERVICEKEYS_AAC_MANAGE_CASE_ASSIGNMENT: "${BEFTA_S2S_CLIENT_SECRET_OF_AAC_MANAGE_CASE_ASSIGNMENT}"
+      MICROSERVICEKEYS_CCD_DATA: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_CCD_GW: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_CCD_DEFINITION: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_CCD_ADMIN: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_CCD_PS: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_FPL_CASE_SERVICE: AAAAAAAAAAAAAAAB
+      MICROSERVICEKEYS_XUI_WEBAPP: AAAAAAAAAAAAAAAB
+      TESTING_SUPPORT_ENABLED: "true"
+  xui-manage-cases:
+    image: hmctspublic.azurecr.io/xui/webapp@sha256:2be9781d9c06d017f03f41947a2de2fd5ac1bbae2a14d232056741db93714220
+#    image: fixed-xui-es:latest
+    environment:
+      FEATURE_APP_INSIGHTS_ENABLED: "true"
+      FEATURE_SECURE_COOKIE_ENABLED: "false"
+      FEATURE_REDIS_ENABLED: "false"
+      FEATURE_OIDC_ENABLED: "false"
+      FEATURE_ELASTICSEARCH_ENABLED: "false"
+      DEBUG: "*:*"
+      JURISDICTIONS: AUTOTEST1,PUBLICLAW,DIVORCE,PROBATE,BEFTA_JURISDICTION_3,BEFTA_JURISDICTION_2,BEFTA_JURISDICTION_1,IA,SSCS,BEFTA_MASTER,NFD
+
+      MICROSERVICE: xui_webapp
+      PROTOCOL: http
+      XUI_ENV: local
+
+      SERVICES_DOCUMENTS_API: http://dm-store:8080
+      SERVICES_PAYMENTS_URL: http://wiremock:8080
+      SERVICES_EM_ANNO_API: http://ccd-api-gateway:3453
+      SERVICES_CCD_COMPONENT_API: http://case-gateway:80
+      SERVICES_CCD_DATA_STORE_API: http://case-gateway:80
+      SERVICES_IDAM_API_URL: http://idam-api:5000
+      SERVICES_IDAM_CLIENT_ID: xui_webapp
+      SERVICES_IDAM_LOGIN_URL: http://idam-api:5000
+      SERVICES_IDAM_INDEX_URL: /
+      SERVICES_IDAM_ISS_URL: http://idam-api:5000
+      SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
+      SERVICES_S2S: http://service-auth-provider-api:8080
+      REDISCLOUD_URL: http://localhost:6780
+
+      HEALTH_CCD_COMPONENT_API: http://ccd-api-gateway:3453/health
+      HEALTH_CCD_DATA_API: http://ccd-data-store-api:4452/health
+
+      APPINSIGHTS_INSTRUMENTATIONKEY: TESTVAR
+      IDAM_SECRET: xui_webapp_secrect
+      S2S_SECRET: AAAAAAAAAAAAAAAB
+
+      LAUNCH_DARKLY_CLIENT_ID: 5de6610b23ce5408280f2268
+
+    expose:
+      - 3000
+    depends_on:
+      - idam-api
+      - case-gateway
+      - service-auth-provider-api

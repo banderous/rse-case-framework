@@ -2,23 +2,36 @@ version: '3'
 services:
   db:
     ports:
-      - "5432:5432"
+      - "55432:5432"
   backend:
     ports:
       - "8080:8080"
     volumes:
       - './java/build/libs:/app'
-  frontend:
+  case-gateway:
     ports:
-      - "4200:4200"
-      # Debugging port
-      - "9222:9222"
-    volumes:
-      - './angular:/app'
-      - node_modules:/app/node_modules/
-  keycloak:
+      - 80:80
+    environment:
+      INDIE_HOST: host.docker.internal:9998
+  idam-api:
+    environment:
+      SIMULATOR_JWT_ISSUER: http://localhost:5000
+      SIMULATOR_OPENID_BASE-URL: http://localhost:5000
     ports:
-      - "8090:8080"
+      - 3501:5000
+      - 9002:5000
+      - 5000:5000
+  service-auth-provider-api:
+    ports:
+      - 4502:8080
+  xui-manage-cases:
+    environment:
+      SIMULATOR_JWT_ISSUER: http://localhost:5000
+      SERVICES_IDAM_LOGIN_URL: http://localhost:5000
+    ports:
+    - 3455:3000
+
+
 volumes:
   # https://docs.docker.com/storage/volumes/#populate-a-volume-using-a-container
   # The container's node modules will be copied into this volume on creation.

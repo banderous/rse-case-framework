@@ -1,0 +1,32 @@
+{
+  "data": {
+    "GeneralReferralReason": "caseworkerReferral",
+    "GeneralApplicationReferralDate": "2000-01-04",
+    "GeneralReferralType": "other",
+    "GeneralReferralDetails": "foo",
+    "GeneralReferralFee": "No",
+    "D8FinancialOrderFor": [
+      "children",
+      "petitioner"
+    ]
+  },
+  "event": {
+    "id": "generalReferral",
+    "summary": "",
+    "description": ""
+  },
+  "event_token": "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJydjVmNnA2MnU3MHQ3bHB1azNhb3Yzb2prbSIsInN1YiI6IjA3NjhiYTljLTk0YWYtNDVmMi04MWJlLTEwMzAwMjgxNTJlMyIsImlhdCI6MTYxMjQ0NzY4NSwiY2FzZS1pZCI6IjY4IiwiZXZlbnQtaWQiOiJnZW5lcmFsUmVmZXJyYWwiLCJjYXNlLXR5cGUtaWQiOiJESVZPUkNFIiwianVyaXNkaWN0aW9uLWlkIjoiRElWT1JDRSIsImNhc2Utc3RhdGUiOiJBd2FpdGluZ1BheW1lbnQiLCJjYXNlLXZlcnNpb24iOiIyNzNlYTRhMmY1YWEyYWEwNmZjZGM3NzRkNDEyMmE2MzFhMDcwZmNkIiwiZW50aXR5LXZlcnNpb24iOjF9.jAtEO4kq-XNts8HcbnrKIRME-G4ycHsqSSs3jRwTxbY",
+  "ignore_warning": false,
+  "event_data": {
+    "GeneralReferralReason": "caseworkerReferral",
+    "GeneralApplicationReferralDate": "2000-01-04",
+    "GeneralReferralType": "other",
+    "GeneralReferralDetails": "foo",
+    "GeneralReferralFee": "No",
+    "D8FinancialOrderFor": [
+      "children",
+      "petitioner"
+    ]
+  },
+  "case_reference": "1515432442452448"
+}

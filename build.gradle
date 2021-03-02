@@ -1,8 +1,16 @@
-task build(dependsOn: ['java:bootJar', ':angular:build'])
+task build(dependsOn: [':java:backend:bootJar'])
+
+task ftOnly(type: Exec, dependsOn: [build]) {
+    commandLine 'docker-compose', '-p functionalTest', 'up', '-V', '--build', '--no-deps', 'functional-tests'
+}
+
+task daemonFt(type: Exec, dependsOn: [build]) {
+    commandLine 'docker-compose', '-p functionalTest', 'up', '-V', '--build'
+}
 
 task functionalTest(type: Exec, dependsOn: [build]) {
-    environment 'NG_COMMAND', 'ng e2e --configuration local --protractor-config functional/protractor.conf.js'
-    commandLine 'docker-compose', 'up', '-V', '--exit-code-from', 'frontend', '--build'
+    commandLine 'docker-compose', '-p functionalTest', 'up', '-V', '--exit-code-from', 'functional-tests', '--build'
 }
 
 task check(dependsOn: functionalTest)
+
