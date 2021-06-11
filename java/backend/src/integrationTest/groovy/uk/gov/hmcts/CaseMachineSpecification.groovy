@@ -8,8 +8,10 @@ import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.generated.enums.CaseState
 import org.jooq.generated.enums.Event
+import org.jooq.generated.tables.pojos.CaseHistory
 import org.jooq.generated.tables.records.EventsRecord
 import org.jooq.impl.DSL
+import org.jooq.impl.DefaultDSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.DuplicateKeyException
@@ -32,6 +34,9 @@ import java.nio.charset.StandardCharsets
 import java.time.LocalDate
 
 import static org.jooq.generated.Tables.CASES
+import static org.jooq.generated.Tables.CASE_HISTORY
+import static org.jooq.generated.Tables.CASE_HISTORY
+import static org.jooq.generated.Tables.CASE_HISTORY
 import static org.jooq.impl.DSL.count
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin
@@ -61,6 +66,9 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private DefaultDSLContext jooq;
 
     private MockMvc mockMvc
 
@@ -96,7 +104,11 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "A new case has a creation event"() {
         given:
         def response = factory.CreateCase().getBody()
-        def events = controller.getCaseEvents(String.valueOf(response.getId()))
+        def events = jooq.select()
+                .from(CASE_HISTORY)
+                .where(CASE_HISTORY.CASE_ID.eq(response.getId()))
+                .orderBy(CASE_HISTORY.TIMESTAMP.desc())
+                .fetchInto(CaseHistory.class);
         def event = events.get(0)
 
 

@@ -24,6 +24,7 @@ import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -55,8 +56,7 @@ import static org.jooq.generated.Tables.EVENTS;
 import static org.jooq.generated.Tables.PARTIES;
 import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 
-@RestController
-@RequestMapping("/web/cases")
+@Configuration
 public class CaseMachine {
 
     @Autowired
@@ -199,15 +199,6 @@ public class CaseMachine {
 
     }
 
-    @GetMapping(path = "/{caseId}/events")
-    public List<CaseHistory> getCaseEvents(@PathVariable("caseId") String caseId) {
-        return jooq.select()
-            .from(CASE_HISTORY)
-            .where(CASE_HISTORY.CASE_ID.eq(Long.valueOf(caseId)))
-            .orderBy(CASE_HISTORY.TIMESTAMP.desc())
-            .fetchInto(CaseHistory.class);
-    }
-
     @Data
     @AllArgsConstructor
     public static class CaseParty {
@@ -223,7 +214,6 @@ public class CaseMachine {
         }
     }
 
-    @GetMapping(path = "/{caseId}/parties")
     public List<CaseParty> getParties(@PathVariable("caseId") String caseId) {
         return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
