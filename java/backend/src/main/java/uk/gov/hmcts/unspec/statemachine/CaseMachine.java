@@ -1,12 +1,21 @@
 package uk.gov.hmcts.unspec.statemachine;
 
+import static org.jooq.generated.Tables.CASES;
+import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIM_EVENTS;
+import static org.jooq.generated.Tables.CLAIM_PARTIES;
+import static org.jooq.generated.Tables.EVENTS;
+import static org.jooq.generated.Tables.PARTIES;
+import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
+
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import io.swagger.v3.oas.annotations.Parameter;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,43 +27,22 @@ import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyRole;
-import org.jooq.generated.tables.pojos.CaseHistory;
 import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.generated.tables.records.EventsRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
-
-import java.util.List;
-import java.util.Set;
 import uk.gov.hmcts.unspec.event.CloseCase;
 import uk.gov.hmcts.unspec.event.CreateClaim;
 import uk.gov.hmcts.unspec.event.ReopenCase;
-
-
-import static org.jooq.generated.Tables.CASES;
-import static org.jooq.generated.Tables.CASE_HISTORY;
-import static org.jooq.generated.Tables.CLAIMS;
-import static org.jooq.generated.Tables.CLAIM_EVENTS;
-import static org.jooq.generated.Tables.CLAIM_PARTIES;
-import static org.jooq.generated.Tables.EVENTS;
-import static org.jooq.generated.Tables.PARTIES;
-import static org.jooq.generated.Tables.PARTIES_WITH_CLAIMS;
 
 @Configuration
 public class CaseMachine {
@@ -62,8 +50,8 @@ public class CaseMachine {
     @Autowired
     DefaultDSLContext jooq;
 
-    @Bean
-    public StateMachine<CaseState, Event, EventsRecord> buildCase() {
+    @Bean(name = "cases")
+    public StateMachine<CaseState, Event, EventsRecord> build() {
         StateMachine<CaseState, Event, EventsRecord> result = new StateMachine<>(
             "cases", Event.class, jooq,
             this::create, Event.CreateClaim, EVENTS, EVENTS.CASE_ID, EVENTS.STATE, EVENTS.ID, EVENTS.USER_ID, EVENTS.SEQUENCE_NUMBER);
