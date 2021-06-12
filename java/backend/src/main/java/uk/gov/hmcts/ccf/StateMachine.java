@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import net.jodah.typetools.TypeResolver;
@@ -76,15 +77,15 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
         this.sequenceField = sequenceField;
     }
 
-    public CaseUpdateViewEvent getEvent(Long caseId, String event) {
-        return getEvent(caseId, Enum.valueOf(enumClass, event));
+    public CaseUpdateViewEvent getEvent(String userId, Long caseId, String event, String param) {
+        return getEvent(userId, caseId, Enum.valueOf(enumClass, event), param);
     }
 
-    public CaseUpdateViewEvent getEvent(Long caseId, EventT event) {
+    public CaseUpdateViewEvent getEvent(String userId, Long caseId, EventT event, String param) {
         if (dynamicEvents.containsKey(event)) {
             TransitionRecord e = dynamicEvents.get(event);
             EventBuilder builder = new EventBuilder(e.clazz, event.toString(), event.toString());
-            e.consumer.accept(caseId, builder);
+            e.consumer.accept(new TransitionContext(userId, caseId, param), builder);
             return builder.build();
         }
         if (events.containsKey(event)) {
@@ -191,7 +192,7 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
 
     public <T> StateMachine<StateT, EventT, R> dynamicEvent(StateT state, EventT event,
                                                          BiConsumer<TransitionContext, T> consumer,
-                                                         BiConsumer<Long, EventBuilder<T>> builder) {
+                                                         BiConsumer<TransitionContext, EventBuilder<T>> builder) {
         Class<?>[] typeArgs = TypeResolver.resolveRawArguments(BiConsumer.class, consumer.getClass());
         dynamicEvents.put(event, new TransitionRecord(state, event, typeArgs[1], builder));
         transitions.put(state.toString(), new TransitionRecord(state, event, typeArgs[1], consumer));
@@ -238,10 +239,12 @@ public class StateMachine<StateT, EventT extends Enum<EventT>, R extends Record>
     }
 
     @Data
+    @RequiredArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class TransitionContext {
-        private String userId;
-        private Long entityId;
+        private final String userId;
+        private final Long entityId;
+        private String param;
     }
 }

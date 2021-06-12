@@ -29,6 +29,7 @@ import org.jooq.generated.enums.Event;
 import org.jooq.generated.enums.PartyRole;
 import org.jooq.generated.tables.records.CasesRecord;
 import org.jooq.generated.tables.records.EventsRecord;
+import org.jooq.generated.tables.records.PartiesRecord;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -80,13 +81,29 @@ public class CaseMachine {
         return result;
     }
 
-    private void prepareAddressChange(Long id, EventBuilder<Address> builder) {
-        builder.name("Yo dawg")
-            .field(Address::getAddress1);
+    @SneakyThrows
+    private void prepareAddressChange(StateMachine.TransitionContext context, EventBuilder<Address> builder) {
+      long partyId = Long.parseLong(context.getParam());
+        PartiesRecord party = jooq.fetchOne(PARTIES, PARTIES.PARTY_ID.eq(partyId));
+        Party p = getObjectMapper().readValue(party.getData().data(), Party.class);
+
+        builder.name("Change address for " + p.name())
+            .bind(p.getAddress())
+            .field(Address::getAddress1)
+            .field(Address::getAddress2);
     }
 
+    @SneakyThrows
     private void changeAddress(StateMachine.TransitionContext transitionContext, Address t) {
-
+        // TODO
+        PartiesRecord party =
+            jooq.selectFrom(PARTIES)
+                .where(PARTIES.PARTY_ID.eq(Long.valueOf(transitionContext.getParam())))
+                .fetchOne();
+        Party p = getObjectMapper().readValue(party.getData().data(), Party.class);
+        p.setAddress(t);
+        party.setData(JSONB.valueOf(getObjectMapper().writeValueAsString(p)));
+        party.store();
     }
 
     private Long create() {
@@ -95,8 +112,8 @@ public class CaseMachine {
         return r.getCaseId();
     }
 
-    private void buildAddClaimEvent(Long caseId, EventBuilder<AddClaim> builder) {
-        List<CaseMachine.CaseParty> parties = getParties(String.valueOf(caseId));
+    private void buildAddClaimEvent(StateMachine.TransitionContext context, EventBuilder<AddClaim> builder) {
+        List<CaseMachine.CaseParty> parties = getParties(String.valueOf(context.getEntityId()));
         Map<Long, String> options = Maps.newHashMap();
         for (CaseMachine.CaseParty party : parties) {
             options.put(party.getPartyId(), party.getData().name());

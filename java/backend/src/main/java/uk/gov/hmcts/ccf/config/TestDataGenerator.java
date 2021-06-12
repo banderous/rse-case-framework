@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
+import uk.gov.hmcts.unspec.dto.Address;
 import uk.gov.hmcts.unspec.dto.Company;
 import uk.gov.hmcts.unspec.dto.Organisation;
 import uk.gov.hmcts.unspec.dto.PartyType;
@@ -62,19 +63,30 @@ public class TestDataGenerator implements Callback {
             .values(testUserId, "John", "Smith")
             .execute();
 
+        Address address = Address.builder()
+            .address1("A house")
+            .address2("A street")
+            .address3("A city")
+            .postcode("ZX8 4PQ").build();
+
+        Company acme = new Company("Acme Ltd");
+        acme.setAddress(address);
+        Organisation megacorp = new Organisation("Megacorp Inc");
+        megacorp.setAddress(address);
         CreateClaim o = CreateClaim.builder()
             .claimantReference("666")
             .defendantReference("999")
             .lowerValue(5000)
             .higherValue(10000)
-            .claimant(new Company("Acme Ltd"))
-            .defendant(new Organisation("Megacorp Inc"))
+            .claimant(acme)
+            .defendant(megacorp)
             .build();
         Long caseId = controller.onCreated(testUserId, new ObjectMapper().valueToTree(o));
 
         AddParty ap = AddParty.builder()
             .partyType(PartyType.Individual)
             .title("Hooli Inc")
+            .address(address)
             .firstName("")
             .lastName("")
             .build();
@@ -84,6 +96,7 @@ public class TestDataGenerator implements Callback {
         ap = AddParty.builder()
             .partyType(PartyType.Individual)
             .title("Flixnet inc")
+            .address(address)
             .firstName("")
             .lastName("")
             .build();

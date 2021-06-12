@@ -1,10 +1,17 @@
 package uk.gov.hmcts.unspec.statemachine;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import static org.jooq.generated.Tables.CLAIMS;
+import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
+import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
+import static org.jooq.generated.Tables.CLAIM_EVENTS;
+import static org.jooq.generated.Tables.CLAIM_HISTORY;
+
+
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.jooq.Record2;
 import org.jooq.generated.enums.ClaimEvent;
 import org.jooq.generated.enums.ClaimState;
 import org.jooq.generated.tables.pojos.ClaimHistory;
@@ -14,26 +21,11 @@ import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.ConfirmService;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CreateClaim;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Set;
-
-
-import static org.jooq.generated.Tables.CLAIMS;
-import static org.jooq.generated.Tables.CLAIMS_WITH_PARTIES;
-import static org.jooq.generated.Tables.CLAIMS_WITH_STATES;
-import static org.jooq.generated.Tables.CLAIM_EVENTS;
-import static org.jooq.generated.Tables.CLAIM_HISTORY;
 
 @Configuration
 public class ClaimMachine {

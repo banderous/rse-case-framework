@@ -89,8 +89,9 @@ public class CaseController {
             ? caseId
             : Long.parseLong(splits[2]);
 
+        String param = splits.length > 2 ? splits[2] : null;
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(
-            user.getCurrentUserId(), entityId);
+            user.getCurrentUserId(), entityId, param);
 
         machine.rehydrate(entityId);
 

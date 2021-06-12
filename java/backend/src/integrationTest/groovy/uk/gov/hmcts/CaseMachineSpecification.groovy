@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import uk.gov.hmcts.ccd.v2.internal.controller.UICaseController
 import uk.gov.hmcts.ccf.StateMachine
+import uk.gov.hmcts.unspec.dto.Address
 import uk.gov.hmcts.unspec.statemachine.CaseMachine
 import uk.gov.hmcts.unspec.dto.AddClaim
 import uk.gov.hmcts.unspec.event.CloseCase
@@ -122,7 +123,6 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "A new case has two parties"() {
         given:
         def response = factory.CreateCase().getBody()
-        def s = controller.getParties(String.valueOf(response.getId()));
         def parties = controller.getParties(String.valueOf(response.getId()))
 
         expect: "Case has two parties"
@@ -130,6 +130,29 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
         parties[0].partyId > 0
         parties[0].data != null
         parties[0].claims.claimant.size() == 1
+    }
+
+    def "A parties address can be changed"() {
+        given:
+        def userId = factory.createUser()
+        def response = factory.CreateCase(userId).getBody()
+        def parties = controller.getParties(String.valueOf(response.getId()))
+        def address = Address.builder().address1("new line1")
+                .address2("new line2").build();
+        def data = new ObjectMapper().valueToTree(address);
+        def pid = parties.get(0).getPartyId()
+        def context = StateMachine.TransitionContext.builder()
+                .userId(userId)
+                .entityId(response.getId())
+                .param(pid.toString())
+                .build()
+        stateMachine.handleEvent(context, Event.ChangePartyAddress, data)
+        parties = controller.getParties(String.valueOf(response.getId()))
+        def party = parties.find {x -> (x.getPartyId() == pid) }
+
+        expect: "Case has two parties"
+        party.data.address.address1 == "new line1"
+        party.data.address.address2 == "new line2"
     }
 
     def "A party cannot be on both sides of a claim"() {

@@ -7,7 +7,10 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 {{ party.data.name }}<br>
-                {{ party.data.address.address1 }}<br>London<br>SE23 6FH
+                {{ party.data.address.address1 }}<br>
+                {{ party.data.address.address2 }}<br>
+                {{ party.data.address.address3 }}<br>
+                {{ party.data.address.postcode }}<br>
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/cases/case-details/{{caseId}}/trigger/cases_ChangePartyAddress_{{party.partyId}}">

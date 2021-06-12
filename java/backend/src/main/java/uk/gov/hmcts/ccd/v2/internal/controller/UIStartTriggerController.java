@@ -14,6 +14,7 @@ import uk.gov.hmcts.ccd.domain.model.aggregated.CaseUpdateViewEvent;
 import uk.gov.hmcts.ccd.v2.V2;
 import uk.gov.hmcts.ccd.v2.internal.resource.CaseUpdateViewEventResource;
 import uk.gov.hmcts.ccf.StateMachine;
+import uk.gov.hmcts.ccf.config.UserProvider;
 
 @RestController
 @RequestMapping(path = "/data/internal")
@@ -21,6 +22,9 @@ public class UIStartTriggerController {
     private static final String ERROR_CASE_ID_INVALID = "Case ID is not valid";
 
     private Map<String, StateMachine> stateMachines;
+
+    @Autowired
+    UserProvider user;
 
     @Autowired
     public UIStartTriggerController(List<StateMachine> machines) {
@@ -71,8 +75,9 @@ public class UIStartTriggerController {
         long entityId = machineId.equals("cases")
             ? caseId
             : Long.parseLong(splits[2]);
+        String param = splits.length > 2 ? splits[2] : null;
         machine.rehydrate(entityId);
-        CaseUpdateViewEvent view = machine.getEvent(entityId, eventId);
+        CaseUpdateViewEvent view = machine.getEvent(user.getCurrentUserId(), entityId, eventId, param);
 
         CaseUpdateViewEventResource e = CaseUpdateViewEventResource.forCase(
             view,

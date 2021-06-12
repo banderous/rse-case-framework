@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import uk.gov.hmcts.unspec.dto.Address;
 
 public class EventBuilder<T> {
 
@@ -44,6 +45,7 @@ public class EventBuilder<T> {
         .put(boolean.class, "YesOrNo")
         .put(Boolean.class, "YesOrNo")
         .build();
+    private T bean;
 
     public static String typeName(Class c) {
         if (typeMap.containsKey(c)) {
@@ -153,21 +155,29 @@ public class EventBuilder<T> {
             .fieldTypeDefinition(ftb.build());
     }
 
-    public EventBuilder<T> field(TypedPropertyGetter<T, ?> getter) {
+    public <U> EventBuilder<T> field(TypedPropertyGetter<T, U> getter) {
         String id = PropertyUtils.getPropertyName(clazz, getter);
         PropertyDescriptor descriptor = de.cronn.reflection.util.PropertyUtils
             .getPropertyDescriptor(clazz, getter);
         Class propertyType = descriptor.getPropertyType();
 
+        U value = null;
+        if (null != bean) {
+            value = getter.get(bean);
+        }
+
         if (propertyType.isEnum()) {
             builder.caseField(CaseViewField.builder()
                 .id(id)
+                .value(value)
                 .showCondition(showGroup)
                 .fieldTypeDefinition(buildFixedList(propertyType))
                 .build());
         } else if (typeMap.containsKey(propertyType)) {
             builder.caseField(
-                buildField(getter, typeMap.get(propertyType)).build()
+                buildField(getter, typeMap.get(propertyType))
+                    .value(value)
+                    .build()
             );
         } else {
             throw new RuntimeException("Unimplemented type:" + propertyType);
@@ -208,6 +218,11 @@ public class EventBuilder<T> {
 
     public EventBuilder<T> showGroup(String showCondition) {
         this.showGroup = showCondition;
+        return this;
+    }
+
+    public EventBuilder<T> bind(T a) {
+        this.bean = a;
         return this;
     }
 
