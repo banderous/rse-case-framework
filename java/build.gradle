@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.3.5.RELEASE'
-    id 'com.revolut.jooq-docker' version '0.3.6'
+    id 'com.revolut.jooq-docker' version '0.3.7'
     id 'groovy'
     id 'uk.gov.hmcts.java' version '0.12.3'
 }
