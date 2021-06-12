@@ -58,7 +58,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-    integrationTestCompile "org.testcontainers:postgresql:1.15.1"
+    integrationTestCompile "org.testcontainers:postgresql:1.15.3"
     testCompile group: 'org.assertj', name: 'assertj-core', version: '3.18.1'
     testCompile group: 'org.spockframework', name: 'spock-core', version: '1.3-groovy-2.5'
     testCompile group: 'org.spockframework', name: 'spock-spring', version: '1.3-groovy-2.5'
