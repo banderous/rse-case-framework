@@ -23,7 +23,7 @@
     "@angular/router": "^11.0.3",
     "@hmcts/frontend": "0.0.41-alpha",
     "govuk-frontend": "^3.10.2",
-    "rxjs": "~6.6.3",
+    "rxjs": "~6.6.7",
     "tslib": "^2.1.0",
     "zone.js": "~0.10.3"
   },
