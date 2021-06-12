@@ -3,7 +3,7 @@ plugins {
     id 'org.springframework.boot' version '2.3.5.RELEASE'
     id 'com.revolut.jooq-docker' version '0.3.6'
     id 'groovy'
-    id 'uk.gov.hmcts.java' version '0.12.3'
+    id 'uk.gov.hmcts.java' version '0.12.12'
 }
 
 group = 'uk.gov.hmcts.ccf'
