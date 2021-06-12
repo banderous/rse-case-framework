@@ -68,7 +68,9 @@ public class UIStartTriggerController {
         String eventId = splits[1];
 
         StateMachine<?, ? extends Enum<?>, ?> machine = stateMachines.get(machineId);
-        long entityId = splits.length > 2 ? Long.parseLong(splits[2]) : caseId;
+        long entityId = machineId.equals("cases")
+            ? caseId
+            : Long.parseLong(splits[2]);
         machine.rehydrate(entityId);
         CaseUpdateViewEvent view = machine.getEvent(entityId, eventId);
 

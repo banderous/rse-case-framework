@@ -85,7 +85,9 @@ public class CaseController {
 
         String eventId = splits[1];
         // Entity refers to the case unless specified.
-        long entityId = splits.length > 2 ? Long.parseLong(splits[2]) : caseId;
+        long entityId = splits[0].equals("cases")
+            ? caseId
+            : Long.parseLong(splits[2]);
 
         StateMachine.TransitionContext context = new StateMachine.TransitionContext(
             user.getCurrentUserId(), entityId);

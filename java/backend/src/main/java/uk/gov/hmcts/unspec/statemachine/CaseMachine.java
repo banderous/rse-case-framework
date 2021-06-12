@@ -38,6 +38,7 @@ import uk.gov.hmcts.ccf.EventBuilder;
 import uk.gov.hmcts.ccf.StateMachine;
 import uk.gov.hmcts.unspec.dto.AddClaim;
 import uk.gov.hmcts.unspec.dto.AddParty;
+import uk.gov.hmcts.unspec.dto.Address;
 import uk.gov.hmcts.unspec.dto.Individual;
 import uk.gov.hmcts.unspec.dto.Party;
 import uk.gov.hmcts.unspec.event.CloseCase;
@@ -67,6 +68,8 @@ public class CaseMachine {
             .field(AddParty::getLastName)
             .field(AddParty::getDateOfBirth);
 
+        result.dynamicEvent(CaseState.Created, Event.ChangePartyAddress, this::changeAddress, this::prepareAddressChange);
+
         result.dynamicEvent(CaseState.Created, Event.AddClaim, this::addClaim, this::buildAddClaimEvent);
 
         result.addTransition(CaseState.Created, CaseState.Closed, Event.CloseCase, this::closeCase)
@@ -75,6 +78,15 @@ public class CaseMachine {
         result.addTransition(CaseState.Closed, CaseState.Stayed, Event.SubmitAppeal, this::reopenCase)
             .field(ReopenCase::getReason);
         return result;
+    }
+
+    private void prepareAddressChange(Long id, EventBuilder<Address> builder) {
+        builder.name("Yo dawg")
+            .field(Address::getAddress1);
+    }
+
+    private void changeAddress(StateMachine.TransitionContext transitionContext, Address t) {
+
     }
 
     private Long create() {
@@ -99,6 +111,8 @@ public class CaseMachine {
 
     @SneakyThrows
     private void addParty(StateMachine.TransitionContext context, AddParty party) {
+        party.setAddress(Address.builder()
+            .address1("A place").build());
         jooq.insertInto(PARTIES, PARTIES.CASE_ID, PARTIES.DATA)
             .values(context.getEntityId(), JSONB.valueOf(getObjectMapper().writeValueAsString(party)))
             .execute();

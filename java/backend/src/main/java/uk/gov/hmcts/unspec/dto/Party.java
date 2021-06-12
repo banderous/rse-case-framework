@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public abstract class Party {
     private long partyId;
-    private String address;
+    private Address address;
     private long solicitorId;
 
     public abstract String name();

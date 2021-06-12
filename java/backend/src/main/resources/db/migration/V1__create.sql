@@ -11,7 +11,8 @@ create type event as enum (
     'AddParty',
     'AddClaim',
     'CloseCase',
-    'SubmitAppeal'
+    'SubmitAppeal',
+    'ChangePartyAddress'
     );
 
 create table users(
@@ -144,3 +145,4 @@ with history as (
     join claims using (claim_id)
 )
 select * from history join users using (user_id);
+

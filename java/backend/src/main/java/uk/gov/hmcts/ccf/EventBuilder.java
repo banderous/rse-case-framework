@@ -85,8 +85,9 @@ public class EventBuilder<T> {
         this.pageLabels.put(currentPage, label);
     }
 
-    public void name(String name) {
+    public EventBuilder<T> name(String name) {
         this.builder.name(name);
+        return this;
     }
 
     public EventBuilder(Class<T> clazz) {

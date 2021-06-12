@@ -7,10 +7,10 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 {{ party.data.name }}<br>
-                72 Guild Street<br>London<br>SE23 6FH
+                {{ party.data.address.address1 }}<br>London<br>SE23 6FH
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="#">
+                <a class="govuk-link" href="/cases/case-details/{{caseId}}/trigger/cases_ChangePartyAddress_{{party.partyId}}">
                     Change<span class="govuk-visually-hidden"> contact information</span>
                 </a>
             </dd>

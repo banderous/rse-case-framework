@@ -95,7 +95,8 @@ public class UICaseController {
         builder.newTab("Parties", "Parties")
             .label(renderTemplate(
                 "template/parties.md",
-                Map.of("parties", parties)));
+                Map.of("parties", parties,
+                    "caseId", caseId)));
 
         return builder;
     }

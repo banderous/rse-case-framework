@@ -31,4 +31,6 @@ public class AddParty {
 
     @XUI(label = "Name")
     private String name;
+
+    private Address address;
 }
