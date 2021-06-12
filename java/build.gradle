@@ -24,10 +24,10 @@ sourceSets {
 
 dependencies {
     implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    compileOnly 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation 'org.jooq:jooq:3.14.4'
