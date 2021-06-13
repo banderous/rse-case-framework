@@ -25,8 +25,8 @@ class ClaimControllerSpec extends BaseSpringBootSpec {
 
     def "A new case has a single claim"() {
         given:
-        def response = factory.CreateCase().getBody()
-        def claims = controller.getClaims(String.valueOf(response.getId()))
+        def id = factory.CreateCase()
+        def claims = controller.getClaims(id)
         ClaimMachine.Claim claim = claims[0]
 
         expect: "Case has single claim"
@@ -40,16 +40,16 @@ class ClaimControllerSpec extends BaseSpringBootSpec {
     def "Confirm service for a claim"() {
         given:
         def userId = factory.createUser()
-        def response = factory.CreateCase(userId).getBody()
-        def claims = controller.getClaims(String.valueOf(response.getId()))
+        def id = factory.CreateCase(userId)
+        def claims = controller.getClaims(id)
         def claim = claims[0]
         JsonNode data = new ObjectMapper().valueToTree(new ConfirmService("a", "user"));
         def context = StateMachine.TransitionContext.builder()
         .entityId(claim.claimId)
         .userId(userId).build()
         stateMachine.handleEvent(context, ClaimEvent.ConfirmService, data)
-        def modifiedClaim = controller.getClaims(String.valueOf(response.getId()))[0]
-        ArrayList claimList = controller.getClaims(String.valueOf(response.getId()));
+        def modifiedClaim = controller.getClaims(id)[0]
+        ArrayList claimList = controller.getClaims(id);
         ArrayList history = controller.getClaimEvents(String.valueOf(claim.claimId))
 
         expect:
@@ -60,8 +60,8 @@ class ClaimControllerSpec extends BaseSpringBootSpec {
 
     def "A claim has claimants and defendants"() {
         given:
-        def response = factory.CreateCase().getBody()
-        def claims = controller.getClaims(String.valueOf(response.getId()))
+        def id = factory.CreateCase()
+        def claims = controller.getClaims(id)
         def parties = claims[0].parties
         expect: "Case has single claim"
         parties.defendants.size() == 1

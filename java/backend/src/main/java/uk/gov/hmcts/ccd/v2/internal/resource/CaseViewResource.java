@@ -49,7 +49,7 @@ public class CaseViewResource extends RepresentationModel {
     }
 
     private void copyProperties(CaseView caseView) {
-        this.reference = caseView.getCaseId();
+        this.reference = String.valueOf(caseView.getCaseId());
         this.caseType = caseView.getCaseType();
         this.tabs = caseView.getTabs();
         this.metadataFields = caseView.getMetadataFields();

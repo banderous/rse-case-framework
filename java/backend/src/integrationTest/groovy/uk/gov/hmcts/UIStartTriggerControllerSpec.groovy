@@ -17,8 +17,8 @@ class UIStartTriggerControllerSpec extends BaseSpringBootSpec {
 
     def "has dynamic claim events"() {
         given:
-        def c = factory.CreateCase(factory.createUser("1"))
-        def u = controller.getCaseUpdateViewEvent(c.getBody().getId(),
+        def id = factory.CreateCase(factory.createUser("1"))
+        def u = controller.getCaseUpdateViewEvent(id,
                 "cases_AddClaim", false).getBody()
 
         expect:

@@ -14,8 +14,8 @@ class UICaseControllerSpec extends BaseSpringBootSpec {
 
     def "renders the case view"() {
         given:
-        def c = factory.CreateCase(factory.createUser("1"))
-        def view = controller.getCaseView(String.valueOf(c.getBody().getId())).getBody()
+        def id = factory.CreateCase(factory.createUser("1"))
+        def view = controller.getCaseView(id).getBody()
 
         expect:
         view.getTabs().size() > 0

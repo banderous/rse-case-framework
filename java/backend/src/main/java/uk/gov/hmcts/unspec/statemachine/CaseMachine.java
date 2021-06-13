@@ -113,7 +113,7 @@ public class CaseMachine {
     }
 
     private void buildAddClaimEvent(StateMachine.TransitionContext context, EventBuilder<AddClaim> builder) {
-        List<CaseMachine.CaseParty> parties = getParties(String.valueOf(context.getEntityId()));
+        List<CaseMachine.CaseParty> parties = getParties(context.getEntityId());
         Map<Long, String> options = Maps.newHashMap();
         for (CaseMachine.CaseParty party : parties) {
             options.put(party.getPartyId(), party.getData().name());
@@ -233,21 +233,12 @@ public class CaseMachine {
         }
     }
 
-    public List<CaseParty> getParties(@PathVariable("caseId") String caseId) {
+    public List<CaseParty> getParties(long caseId) {
         return jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
                 .join(PARTIES_WITH_CLAIMS).using(PARTIES.PARTY_ID)
-                .where(PARTIES.CASE_ID.eq(Long.valueOf(caseId)))
+                .where(PARTIES.CASE_ID.eq(caseId))
                 .orderBy(PARTIES.CASE_ID.asc())
                 .fetchInto(CaseParty.class);
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Data
-    public static class CaseActions {
-        private long id;
-        private CaseState state;
-        private Set<Event> actions;
     }
 }

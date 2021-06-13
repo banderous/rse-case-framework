@@ -80,15 +80,6 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
                 .build();
     }
 
-    def "A case can be created"() {
-        given:
-        def response = factory.CreateCase()
-
-        expect: "Status is 201 and the response is the case ID"
-        response.getStatusCode() == HttpStatus.CREATED
-        response.getHeaders().getLocation().toString().contains("/cases")
-    }
-
     def "an invalid case is not created"() {
         when:
         def userId = factory.createUser()
@@ -104,10 +95,9 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
 
     def "A new case has a creation event"() {
         given:
-        def response = factory.CreateCase().getBody()
         def events = jooq.select()
                 .from(CASE_HISTORY)
-                .where(CASE_HISTORY.CASE_ID.eq(response.getId()))
+                .where(CASE_HISTORY.CASE_ID.eq(factory.CreateCase()))
                 .orderBy(CASE_HISTORY.TIMESTAMP.desc())
                 .fetchInto(CaseHistory.class);
         def event = events.get(0)
@@ -122,8 +112,7 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
 
     def "A new case has two parties"() {
         given:
-        def response = factory.CreateCase().getBody()
-        def parties = controller.getParties(String.valueOf(response.getId()))
+        def parties = controller.getParties(factory.CreateCase())
 
         expect: "Case has two parties"
         parties.size() == 2
@@ -135,19 +124,19 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "A parties address can be changed"() {
         given:
         def userId = factory.createUser()
-        def response = factory.CreateCase(userId).getBody()
-        def parties = controller.getParties(String.valueOf(response.getId()))
+        def id = factory.CreateCase(userId)
+        def parties = controller.getParties(id)
         def address = Address.builder().address1("new line1")
                 .address2("new line2").build();
         def data = new ObjectMapper().valueToTree(address);
         def pid = parties.get(0).getPartyId()
         def context = StateMachine.TransitionContext.builder()
                 .userId(userId)
-                .entityId(response.getId())
+                .entityId(id)
                 .param(pid.toString())
                 .build()
         stateMachine.handleEvent(context, Event.ChangePartyAddress, data)
-        parties = controller.getParties(String.valueOf(response.getId()))
+        parties = controller.getParties(id)
         def party = parties.find {x -> (x.getPartyId() == pid) }
 
         expect: "Case has two parties"
@@ -158,10 +147,10 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "A party cannot be on both sides of a claim"() {
         when:
         def userId = factory.createUser()
-        def response = factory.CreateCase(userId).getBody()
-        def parties = controller.getParties(String.valueOf(response.getId()))
+        def id = factory.CreateCase(userId)
+        def parties = controller.getParties(id)
         Long partyId = parties[0].partyId
-        stateMachine.handleEvent(userId, response.getId(), Event.AddClaim,
+        stateMachine.handleEvent(userId, id, Event.AddClaim,
                 AddClaim.builder()
                         .lowerValue(10)
                         .higherValue(20)
@@ -176,8 +165,7 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "An event can change a case's state"() {
         given:
         def userId = factory.createUser()
-        def response = factory.CreateCase(userId)
-        def id = response.getBody().id
+        def id = factory.CreateCase(userId)
         def data = new ObjectMapper().valueToTree(new CloseCase("Withdrawn"));
         stateMachine.handleEvent(userId, id, Event.CloseCase, data)
 
@@ -188,8 +176,7 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
     def "A closed case can be reopened"() {
         given:
         def userId = factory.createUser()
-        def response = factory.CreateCase(userId)
-        def id = response.getBody().id
+        def id = factory.CreateCase(userId)
         def data = new ObjectMapper().valueToTree(new CloseCase("Withdrawn"));
         stateMachine.handleEvent(userId, id, Event.CloseCase, data)
         data = new ObjectMapper().valueToTree(new SubmitAppeal("New evidence"));
@@ -207,11 +194,11 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
 
     def "Adds a new party"() {
         when:
-        def c = factory.CreateCase()
-        stateMachine.rehydrate(c.getBody().getId());
+        def id = factory.CreateCase()
+        stateMachine.rehydrate(id);
         URL url = Resources.getResource("requests/data/cases/157/addParty.json");
         String body = Resources.toString(url, StandardCharsets.UTF_8);
-        String path = String.format('/data/cases/%s/events', c.getBody().getId());
+        String path = String.format('/data/cases/%s/events', id)
         mockMvc.perform(post(path)
                 .with(csrf())
                 .with(oidcLogin())
@@ -219,6 +206,6 @@ class CaseMachineSpecification extends BaseSpringBootSpec {
                 .content(body))
                 .andExpect(status().isCreated())
         then:
-        uiCaseController.getCaseView(c.getBody().getId().toString())
+        uiCaseController.getCaseView(id)
     }
 }

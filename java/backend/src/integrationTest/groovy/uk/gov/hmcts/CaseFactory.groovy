@@ -33,7 +33,7 @@ class CaseFactory {
         return id;
     }
 
-    ResponseEntity<CaseMachine.CaseActions> CreateCase(String userId = createUser()) {
+    long CreateCase(String userId = createUser()) {
         def event = CreateClaim.builder()
                 .claimantReference("Foo")
                 .defendantReference("Bar")
@@ -42,8 +42,6 @@ class CaseFactory {
                 .lowerValue(1)
                 .higherValue(2)
                 .build()
-        def id = machine.onCreated(userId, new ObjectMapper().valueToTree(event))
-        return ResponseEntity.created(URI.create("/cases/" + id))
-                .body(new CaseMachine.CaseActions(id, machine.getState(), Sets.newHashSet()));
+        return machine.onCreated(userId, new ObjectMapper().valueToTree(event))
     }
 }

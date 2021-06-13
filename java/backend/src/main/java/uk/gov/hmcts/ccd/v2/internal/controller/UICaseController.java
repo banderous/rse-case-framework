@@ -64,7 +64,7 @@ public class UICaseController {
             V2.MediaType.UI_CASE_VIEW
         }
     )
-    public ResponseEntity<CaseViewResource> getCaseView(@PathVariable("caseId") String caseId) {
+    public ResponseEntity<CaseViewResource> getCaseView(@PathVariable("caseId") long caseId) {
 
         List<CaseViewEvent> history = getCaseViewHistory(caseId);
 
@@ -83,7 +83,7 @@ public class UICaseController {
     }
 
     @SneakyThrows
-    private CaseViewBuilder buildParties(String caseId, CaseViewBuilder builder) {
+    private CaseViewBuilder buildParties(long caseId, CaseViewBuilder builder) {
         List<CaseMachine.CaseParty> parties =
             jooq.select(PARTIES.PARTY_ID, PARTIES.DATA, PARTIES_WITH_CLAIMS.CLAIMS)
                 .from(PARTIES)
@@ -115,7 +115,7 @@ public class UICaseController {
 
 
     @SneakyThrows
-    private CaseViewBuilder buildClaims(String caseId, CaseViewBuilder builder) {
+    private CaseViewBuilder buildClaims(long caseId, CaseViewBuilder builder) {
         List<ClaimMachine.Claim> claims = claimController.getClaims(caseId);
         for (ClaimMachine.Claim claim : claims) {
             String tabName = getClaimName(claim.getParties());
@@ -148,10 +148,10 @@ public class UICaseController {
         return parties.getClaimants().get(0).name() + " vs.";
     }
 
-    private List<CaseViewEvent> getCaseViewHistory(String caseId) {
+    private List<CaseViewEvent> getCaseViewHistory(long caseId) {
         List<CaseHistory> hist = jooq.select()
             .from(CASE_HISTORY)
-            .where(CASE_HISTORY.CASE_ID.eq(Long.valueOf(caseId)))
+            .where(CASE_HISTORY.CASE_ID.eq(caseId))
             .orderBy(CASE_HISTORY.TIMESTAMP.desc())
             .fetchInto(CaseHistory.class);
         return hist.stream().map(x -> CaseViewEvent.builder()
@@ -219,7 +219,7 @@ public class UICaseController {
         return id;
     }
 
-    private CaseView buildCaseView(String caseId) {
+    private CaseView buildCaseView(long caseId) {
         CaseView caseView = new CaseView();
         caseView.setCaseId(caseId);
         caseView.setChannels(getChannels());
@@ -234,7 +234,7 @@ public class UICaseController {
         CaseViewType caseType = new CaseViewType();
         caseType.setJurisdiction(jurisdiction);
         caseType.setDescription("Unspecified claims");
-        caseType.setId(caseId);
+        caseType.setId(String.valueOf(caseId));
         caseView.setCaseType(caseType);
         caseView.setEvents(getCaseViewEvents());
         return caseView;
@@ -243,10 +243,10 @@ public class UICaseController {
     @Autowired
     StateMachine<CaseState, Event, EventsRecord> statemachine;
 
-    private List<CaseViewActionableEvent> getActionableEvents(String caseId) {
+    private List<CaseViewActionableEvent> getActionableEvents(long caseId) {
         CaseState currentState = jooq.select(CASES_WITH_STATES.STATE)
             .from(CASES_WITH_STATES)
-            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
             .fetchOne().value1();
 
         List<CaseViewActionableEvent> result = Lists.newArrayList();
@@ -262,10 +262,10 @@ public class UICaseController {
         return result;
     }
 
-    private ProfileCaseState getState(String caseId) {
+    private ProfileCaseState getState(long caseId) {
         CaseState c = jooq.select(CASES_WITH_STATES.STATE)
             .from(CASES_WITH_STATES)
-            .where(CASES_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .where(CASES_WITH_STATES.CASE_ID.eq(caseId))
             .fetchOne().value1();
         String currentState = c.getLiteral();
         return new ProfileCaseState(currentState, currentState, currentState, currentState);

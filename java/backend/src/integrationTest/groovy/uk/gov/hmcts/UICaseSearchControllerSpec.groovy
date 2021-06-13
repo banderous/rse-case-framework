@@ -31,14 +31,14 @@ class UICaseSearchControllerSpec extends BaseSpringBootSpec {
         given:
         URL url = Resources.getResource("requests/data/internal/searchCases.json");
         String json = Resources.toString(url, StandardCharsets.UTF_8);
-        def c = factory.CreateCase()
+        def id = factory.CreateCase()
         def result = controller.searchCases("", "", json).getBody()
         def fields = result.getHeaders().get(0).getFields()
 
         expect:
         result.cases.size() > 0
         result.total == 1
-        result.cases.get(0).fields.get("caseId") == c.getBody().id.toString()
+        result.cases.get(0).fields.get("caseId") == String.valueOf(id)
         result.cases.get(0).fields.get("rowCount") == "1"
 
         fields.size() == 3

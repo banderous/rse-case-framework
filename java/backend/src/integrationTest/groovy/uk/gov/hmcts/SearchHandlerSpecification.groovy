@@ -28,14 +28,14 @@ class SearchHandlerSpecification extends BaseSpringBootSpec {
     def "search by case ID"() {
         def u = factory.createUser("1")
         factory.CreateCase(u)
-        def c2 = factory.CreateCase(u).body
+        def id = factory.CreateCase(u)
         when:
-        def params = ImmutableMap.of("caseId", "-" + String.valueOf(c2.id))
+        def params = ImmutableMap.of("caseId", "-" + String.valueOf(id))
         def query = new XUIQuery(params, 0, 25)
         def results = handler.search(query).results
 
         then:
         results.size() == 1
-        results[0].caseId == c2.id
+        results[0].caseId == id
     }
 }

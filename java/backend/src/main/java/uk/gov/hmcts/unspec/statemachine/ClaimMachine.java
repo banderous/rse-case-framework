@@ -65,11 +65,11 @@ public class ClaimMachine {
         return r.getClaimId();
     }
 
-    public List<Claim> getClaims(@PathVariable("caseId") String caseId) {
+    public List<Claim> getClaims(long caseId) {
         List<Claim> result = jooq.select()
             .from(CLAIMS_WITH_STATES)
             .join(CLAIMS_WITH_PARTIES).using(CLAIMS_WITH_STATES.CLAIM_ID)
-            .where(CLAIMS_WITH_STATES.CASE_ID.eq(Long.valueOf(caseId)))
+            .where(CLAIMS_WITH_STATES.CASE_ID.eq(caseId))
             .orderBy(CLAIMS_WITH_STATES.CLAIM_ID.asc())
             .fetchInto(Claim.class);
 

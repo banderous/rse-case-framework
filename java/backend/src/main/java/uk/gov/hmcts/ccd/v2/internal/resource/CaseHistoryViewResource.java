@@ -20,7 +20,7 @@ import java.util.List;
 public class CaseHistoryViewResource extends RepresentationModel {
 
     @JsonProperty("case_id")
-    private String caseId;
+    private long caseId;
     @JsonProperty("case_type")
     private CaseViewType caseType;
     private List<CaseViewTab> tabs;

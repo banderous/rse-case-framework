@@ -10,17 +10,17 @@ import java.util.List;
 public abstract class AbstractCaseView {
 
     @JsonProperty("case_id")
-    private String caseId;
+    private long caseId;
     @JsonProperty("case_type")
     private CaseViewType caseType;
     private List<CaseViewTab> tabs;
     private List<CaseViewField> metadataFields = Lists.newArrayList();
 
-    public String getCaseId() {
+    public long getCaseId() {
         return caseId;
     }
 
-    public void setCaseId(String caseId) {
+    public void setCaseId(long caseId) {
         this.caseId = caseId;
     }
 
